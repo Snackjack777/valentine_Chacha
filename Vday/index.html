@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My 💜</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="box-container">
+        <div class="box" onclick="openBox()">
+            <div class="box-lid"></div>
+        </div>
+        <p>มีของขวัญส่งถึงคุณ ชาช่าาาา (คลิกเพื่อเปิดกล่อง)</p>
+    </div>
+
+    <div id="garden-container">
+        <div class="flowers">
+            <div class="flower">
+                <div class="flower__leafs flower__leafs--1" id="flower-head">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    
+                    <div class="flower__light flower__light--1"></div>
+                    <div class="flower__light flower__light--2"></div>
+                </div>
+                <div class="flower__line" id="flower-stem">
+                    <div class="flower__line__leaf flower__line__leaf--1"></div>
+                    <div class="flower__line__leaf flower__line__leaf--2"></div>
+                </div>
+            </div>
+            <div class="pot"></div>
+        </div>
+
+        <button class="water-btn" id="water-btn" onclick="waterPlant()">รดน้ำให้หน่อยย 💧</button>
+        <div id="main-message" class="message">เริ่มต้นความรักดีๆด้วยกันนะ 💜</div>
+        <p class="hint" id="click-count"></p>
+    </div>
+
+    <audio id="sound-open" src="open.mp3"></audio>
+    <audio id="sound-water" src="water.mp3"></audio>
+    <audio id="sound-bloom" src="bloom.mp3"></audio>
+
+    <script>
+        let clicks = 0;
+        const targetClicks = 5;
+    
+        function openBox() {
+            const box = document.querySelector('.box');
+            const boxContainer = document.getElementById('box-container');
+            try { document.getElementById('sound-open').play(); } catch(e){}
+            box.classList.add('opened');
+            setTimeout(() => {
+                boxContainer.style.opacity = '0';
+                setTimeout(() => {
+                    boxContainer.style.display = 'none';
+                    const garden = document.getElementById('garden-container');
+                    garden.style.display = 'flex';
+                    setTimeout(() => garden.style.opacity = '1', 50);
+                }, 400);
+            }, 600);
+        }
+    
+        function waterPlant() {
+            if (clicks >= targetClicks) return;
+            clicks++;
+        
+            const waterSound = document.getElementById('sound-water');
+            waterSound.currentTime = 0; // ปรับเป็น 0 เพื่อให้เสียงเริ่มตั้งแต่ต้น
+            try { waterSound.play(); } catch(e){}
+            
+            createWaterDrops();
+    
+            const stem = document.getElementById('flower-stem');
+            const flower = document.getElementById('flower-head');
+    
+            if (clicks <= targetClicks) {
+                // ปรับความสูงให้เพิ่มขึ้นครั้งละ 35px เพื่อความสวยงาม
+                stem.style.height = (clicks * 15) + 'px'; 
+                if (clicks > 2) stem.classList.add('grown');
+            }
+    
+            if (clicks === targetClicks) {
+                setTimeout(() => {
+                    try { document.getElementById('sound-bloom').play(); } catch(e){}
+                }, 500);
+                flower.classList.add('blooming');
+                // สร้างละอองดาวเมื่อดอกไม้บาน
+                createStars();
+                document.getElementById('main-message').style.opacity = '1';
+                document.getElementById('water-btn').style.display = 'none';
+            }
+        }
+    
+        function createWaterDrops() {
+            const pot = document.querySelector('.pot');
+            const rect = pot.getBoundingClientRect();
+            for (let i = 0; i < 6; i++) {
+                const item = document.createElement('div');
+                // สลับระหว่างหยดน้ำกับหัวใจ
+                item.innerHTML = i % 2 === 0 ? '💧' : '💜';
+                item.className = 'floating-item';
+                item.style.left = (rect.left + (rect.width / 2) + (Math.random() * 60 - 30)) + 'px';
+                item.style.top = (rect.top - 150) + 'px';
+                document.body.appendChild(item);
+                setTimeout(() => item.remove(), 1000);
+            }
+        }
+    
+        function createStars() {
+            const flower = document.getElementById('flower-head');
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-dust';
+                // สุ่มตำแหน่งรอบๆ ดอกไม้
+                const x = Math.random() * 200 - 100;
+                const y = Math.random() * 200 - 150;
+                star.style.setProperty('--x', `${x}px`);
+                star.style.setProperty('--y', `${y}px`);
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                flower.appendChild(star);
+            }
+        }
+    </script>
+</body>
+</html>

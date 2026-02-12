@@ -1,0 +1,252 @@
+:root {
+    --color-bg: linear-gradient(to top, #010329, #000000);
+    --line-color: linear-gradient(to bottom, #82ff86, #144425);
+    --leaf-color: linear-gradient(to bottom, #ffe785, #faf573, #1a233a 99%);
+    --flower-color: #d1c4e9; /* สีม่วงพาสเทล */
+    --glow-color: rgba(179, 157, 219, 0.5);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--color-bg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Container Logic --- */
+#box-container, #garden-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 0.8s ease;
+}
+
+#garden-container {
+    display: none;
+    opacity: 0;
+}
+
+/* --- Improved Flower Design --- */
+.flower {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flower__line {
+    width: 4px;
+    height: 0; /* เริ่มต้นที่ 0 */
+    background-image: var(--line-color);
+    border-radius: 4px;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.flower__leafs {
+    position: absolute;
+    bottom: 100%;
+    transform: scale(0); /* เริ่มต้นดอกเล็ก */
+    transition: transform 2s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+    width: 50px;
+    height: 50px;
+}
+
+.flower__leafs.blooming {
+    transform: scale(1.5) translateY(-10px);
+}
+
+.flower__leaf {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 45px;
+    background: var(--flower-color);
+    clip-path: ellipse(50% 50% at 50% 50%);
+    opacity: 0.9;
+    box-shadow: 0 0 15px var(--glow-color);
+    transform-origin: bottom center;
+}
+
+/* จัดเรียงกลีบดอก */
+.flower__leaf--1 { transform: translateX(-50%) rotate(30deg); }
+.flower__leaf--2 { transform: translateX(-50%) rotate(-30deg); }
+.flower__leaf--3 { transform: translateX(-50%) rotate(60deg) scale(0.8); }
+.flower__leaf--4 { transform: translateX(-50%) rotate(-60deg) scale(0.8); }
+
+.flower__white-circle {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #fff;
+}
+
+/* ใบไม้ที่ลำต้น */
+.flower__line__leaf {
+    width: 25px;
+    height: 15px;
+    background: var(--line-color);
+    position: absolute;
+    border-radius: 0 50% 0 50%;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+.flower__line.grown .flower__line__leaf { opacity: 1; }
+.flower__line__leaf--1 { left: -22px; top: 20%; transform: rotate(-20deg); }
+.flower__line__leaf--2 { right: -22px; top: 40%; transform: rotate(200deg); }
+
+.pot {
+    width: 80px;
+    height: 60px;
+    background: #1a1a1a;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+    margin-top: -2px;
+}
+
+/* --- UI Elements --- */
+/* --- UI Elements (ปรับปรุงการเปิดกล่อง) --- */
+.box {
+    width: 100px;
+    height: 100px;
+    background: #b39ddb;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.box-lid {
+    width: 110px;
+    height: 25px;
+    background: #9575cd;
+    position: absolute;
+    top: -8px;
+    left: -5px;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    z-index: 2;
+}
+
+/* เอฟเฟกต์ตอนกดเปิด */
+.box.opened {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.box.opened .box-lid {
+    transform: translateY(-50px) rotate(15deg);
+    opacity: 0;
+}
+
+/* เพิ่ม Hover ให้รู้ว่ากดได้ */
+.box:hover:not(.opened) {
+    transform: scale(1.05);
+}
+.box:hover:not(.opened) .box-lid {
+    transform: translateY(-5px);
+}
+
+.water-btn {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid #b39ddb;
+    color: #b39ddb;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.message {
+    opacity: 0;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #e6e1ff;
+    text-shadow: 0 0 10px var(--glow-color);
+}
+
+.drop {
+    width: 4px;
+    height: 8px;
+    background: #90caf9;
+    position: absolute;
+    border-radius: 50%;
+    animation: fall 0.8s linear;
+}
+
+@keyframes fall {
+    to { transform: translateY(120px); opacity: 0; }
+}
+
+/* --- เพิ่มเติมต่อท้ายไฟล์ style.css เดิม --- */
+
+/* สไตล์สำหรับหัวใจและหยดน้ำขณะรดน้ำ */
+.floating-item {
+    position: absolute;
+    font-size: 18px;
+    pointer-events: none;
+    animation: fall-and-fade 1s ease-in forwards;
+}
+
+@keyframes fall-and-fade {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(150px) scale(0.5); opacity: 0; }
+}
+
+/* สไตล์สำหรับละอองดาว (Star Dust) */
+.star-dust {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #fff, 0 0 20px var(--glow-color);
+    opacity: 0;
+    pointer-events: none;
+    /* ใช้ค่า Variable จาก JS */
+    transform: translate(var(--x), var(--y));
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { 
+        opacity: 0; 
+        /* scale(0) คือจุดเริ่มที่มองไม่เห็น */
+        transform: translate(var(--x), var(--y)) scale(0); 
+    }
+    50% {
+        opacity: 1;
+        /*ปรับเลข-20pxเป็นค่าอื่นเพื่อให้ลอยสูงขึ้นหรือต่ำลง*//*ปรับscale(1.2)เพื่อให้ขนาดดาวใหญ่ขึ้นหรือเล็กขึ้้น*/transform: translate(var(--x), calc(var(--y) - 20px)) scale(1.2);
+        -webkit-transform: translate(var(--x), calc(var(--y) - 10px)) scale(1.2);
+        -moz-transform: translate(var(--x), calc(var(--y) - 10px)) scale(1.2);
+        -ms-transform: translate(var(--x), calc(var(--y) - 10px)) scale(1.2);
+        -o-transform: translate(var(--x), calc(var(--y) - 10px)) scale(1.2);
+}
+}
+
+/* ปรับปรุงข้อความให้ดูเด่นขึ้น */
+.message {
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: opacity 2s ease;
+    text-align: center;
+    padding: 0 20px;
+}
